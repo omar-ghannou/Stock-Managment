@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -16,6 +17,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     Spinner mSpinner;
     DatabaseHelper mydb;
     private ArrayAdapter<String> mArrayAdapter;
+    //list
+    private ListView mListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +31,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mSpinner=findViewById(R.id.spinner);
         mSpinner.setAdapter(mArrayAdapter);
         mSpinner.setOnItemSelectedListener(this);
+        //list
+        mListView=findViewById(R.id.list);
+
 
 
 
