@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -38,11 +39,11 @@ public class PanelActivity extends AppCompatActivity {
         clearall = findViewById(R.id.clearall);
         products = findViewById(R.id.pproducts);
         Cursor data =  mydb.getProductsFromPanel();
-        data.moveToFirst();
-        SimpleCursorAdapter adapter = new SimpleCursorAdapter(
-                this,
-                R.layout.product_design_in_panel,
-                data,
+
+        Log.d("PanelActivity",data.toString());
+
+
+        SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.product_design_in_panel, data,
                 new String[] { DatabaseHelper.Product_Title_Col, DatabaseHelper.Product_Desc_Col,DatabaseHelper.Product_Price_Col,DatabaseHelper.Panel_Product_Quantity_Col },
                 new int[] { R.id.ProductTitle, R.id.ProductDesc,R.id.ProductPrice,R.id.panelQuantity }
         );

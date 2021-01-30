@@ -5,12 +5,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button panel;
+    Spinner mSpinner;
     DatabaseHelper mydb;
+    private ArrayAdapter<String> mArrayAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,14 +21,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mydb = new DatabaseHelper(getBaseContext());
-        panel = findViewById(R.id.button);
+        String []category={"Choose category","Computer","Clavier","Telephone"};
+        mArrayAdapter=new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,category);
+        mSpinner=findViewById(R.id.spinner);
+        mSpinner.setAdapter(mArrayAdapter);
 
-        panel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getBaseContext(),PanelActivity.class);
-                startActivity(intent);
-            }
-        });
     }
 }
