@@ -15,51 +15,52 @@ import com.google.android.material.tabs.TabLayout;
 import java.util.ArrayList;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
-    static SQLiteDatabase mydb;
-    static  String dbname = "StockManagement";
+    public static SQLiteDatabase mydb;
+    public static final String dbname = "stockManagement.db";
 
-    static String Product_Table = "product";
-    static String Product_Id_Col = "product_id";
-    static String Product_Title_Col = "product_title";
-    static String Product_Desc_Col = "product_description";
-    static String Product_Price_Col = "product_Price";
-    static String Product_Quantity_Col = "product_quantity";
-    static String Product_Category_Ref_Col = "product_category_ref";
+    public static final String Product_Table = "product";
+    public static final String Product_Id_Col = "product_id";
+    public static final String Product_Title_Col = "product_title";
+    public static final String Product_Desc_Col = "product_description";
+    public static final String Product_Price_Col = "product_price";
+    public static final String Product_Quantity_Col = "product_quantity";
+    public static final String Product_Category_Ref_Col = "product_category_ref";
 
-    static String Category_Table = "category";
-    static String Category_Id_Col = "category_id";
-    static String Category_Name_Col = "category_name";
+    public static final String Category_Table = "category";
+    public static final String Category_Id_Col = "category_id";
+    public static final String Category_Name_Col = "category_name";
 
-    static String Panel_Table = "panel";
-    static String Panel_Product_Id_Col = "panel_product_id";
-    static String Panel_Product_Quantity_Col = "panel_product_quantity";
+    public static final String Panel_Table = "panel";
+    public static final String Panel_Product_Id_Col = "panel_product_id";
+    public static final String Panel_Product_Quantity_Col = "panel_product_quantity";
 
-    static String Command_Table = "command";
-    static String Command_Id_Col = "command_id";
-    static String Command_Date_Col = "command_date";
+    public static final String Command_Table = "command";
+    public static final String Command_Id_Col = "command_id";
+    public static final String Command_Date_Col = "command_date";
 
-    static String Post_Panel_Table = "post_panel"; //used to store the already purchased products to be referenced in command table
-    static String Post_Panel_Product_Id_Col = "post_panel_product_id";
-    static String Post_Panel_Product_Quantity_Col = "post_panel_product_quantity";
-    static String Post_Panel_Command_Ref_Col = "post_panel_command_ref";
+    public static final String Post_Panel_Table = "post_panel"; //used to store the already purchased products to be referenced in command table
+    public static final String Post_Panel_Product_Id_Col = "post_panel_productId";
+    public static final String Post_Panel_Product_Quantity_Col = "post_panel_product_quantity";
+    public static final String Post_Panel_Command_Ref_Col = "post_panel_command_ref";
 
-    public DatabaseHelper(@Nullable Context context, int version) {
-        super(context, dbname, null, version);
+    public DatabaseHelper(@Nullable Context context) {
+        super(context, dbname, null, 1);
+        mydb =  this.getWritableDatabase();
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        db.execSQL("create table IF NOT EXISTS "+ Product_Table +"(" +Product_Id_Col + " NUMBER primary key AUTOINCREMENT , "+ Product_Title_Col +" TEXT NOT NULL, " + Product_Desc_Col +" TEXT," +
-                 Product_Price_Col + " NUMBER NOT NULL, " + Product_Quantity_Col + " NUMBER NOT NULL, " + Product_Category_Ref_Col + "NUMBER );");
+        db.execSQL("create table IF NOT EXISTS "+ Product_Table +"(" +Product_Id_Col + " INTEGER primary key AUTOINCREMENT , "+ Product_Title_Col +" TEXT NOT NULL, " + Product_Desc_Col +" TEXT," +
+                 Product_Price_Col + " INTEGER NOT NULL, " + Product_Quantity_Col + " INTEGER NOT NULL, " + Product_Category_Ref_Col + " INTEGER );");
 
-        db.execSQL("create table IF NOT EXISTS "+ Category_Table +"(" +Category_Id_Col + " NUMBER primary key AUTOINCREMENT , "+ Category_Name_Col +" TEXT NOT NULL);");
+        db.execSQL("create table IF NOT EXISTS "+ Category_Table +"(" +Category_Id_Col + " INTEGER primary key AUTOINCREMENT, "+ Category_Name_Col +" TEXT NOT NULL);");
 
-        db.execSQL("create table IF NOT EXISTS "+ Panel_Table +"(" + Panel_Product_Id_Col + " NUMBER primary key AUTOINCREMENT , "+ Panel_Product_Quantity_Col +" NUMBER NOT NULL);");
+        db.execSQL("create table IF NOT EXISTS "+ Panel_Table +"(" + Panel_Product_Id_Col + " INTEGER primary key , "+ Panel_Product_Quantity_Col +" INTEGER NOT NULL);");
 
-        db.execSQL("create table IF NOT EXISTS "+ Post_Panel_Table +"(" + Post_Panel_Product_Id_Col + " NUMBER primary key AUTOINCREMENT , "+ Post_Panel_Product_Quantity_Col +" NUMBER NOT NULL, " + Post_Panel_Command_Ref_Col +" NUMBER NOT NULL);");
+        db.execSQL("create table IF NOT EXISTS "+ Post_Panel_Table +"(" + Post_Panel_Product_Id_Col + " INTEGER primary key , "+ Post_Panel_Product_Quantity_Col +" INTEGER NOT NULL, " + Post_Panel_Command_Ref_Col +" INTEGER NOT NULL);");
 
-        db.execSQL("create table IF NOT EXISTS "+ Command_Table +"(" + Command_Id_Col + " NUMBER primary key AUTOINCREMENT , "+ Command_Date_Col +" TEXT);");
+        db.execSQL("create table IF NOT EXISTS "+ Command_Table +"(" + Command_Id_Col + " INTEGER primary key AUTOINCREMENT , "+ Command_Date_Col +" TEXT);");
 
     }
 
@@ -97,10 +98,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         mydb.delete(Category_Table,"" + Category_Name_Col + " = ?",new String[]{name});
     }
 
-    public void insertIntoPanel(String Product_Name){
+    public void insertIntoPanel(int Product_Id){
         mydb = getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(Panel_Product_Id_Col,Product_Name);
+        values.put(Panel_Product_Id_Col,Product_Id);
         values.put(Panel_Product_Quantity_Col,1);
         mydb.insert(Panel_Table,null,values);
     }
@@ -112,6 +113,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         mydb.update(Panel_Table,values,"" + Panel_Product_Id_Col + " = ?", new String[]{Integer.toString(Product_Id)});
     }
 
+    public Cursor getProductsFromPanel(){
+        mydb = getReadableDatabase();
+        return mydb.rawQuery("select p.*, pp." +Panel_Product_Quantity_Col + " from "+ Product_Table + " p, "+ Panel_Table +" pp where p."+ Product_Id_Col +" = pp." + Panel_Product_Id_Col+ " AND " + Product_Id_Col + " IN ( Select " +Panel_Product_Id_Col+ " from " +Panel_Table+ ")" ,null);
+    }
+
     public Cursor getProductQuantityFromPanel(int Product_Id){
         mydb = getReadableDatabase();
         return mydb.rawQuery("select * from "+ Panel_Table +" where " + Panel_Product_Id_Col  + " = ? ",new String[]{Integer.toString(Product_Id)});
@@ -121,11 +127,42 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         mydb = getWritableDatabase();
         mydb.delete(Category_Table,"" + Category_Name_Col + " = ?",new String[]{name});
     }
+    public void ClearPanel(){
+        mydb = getWritableDatabase();
+        mydb.delete(Category_Table,null,null);
+    }
+
+    public void insertIntoPostPanel(int Product_Id, int Product_Quantity, int Command_Id){
+        mydb = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(Post_Panel_Product_Id_Col,Product_Id);
+        values.put(Post_Panel_Product_Quantity_Col,Product_Quantity);
+        values.put(Post_Panel_Command_Ref_Col,Command_Id);
+        mydb.insert(Post_Panel_Table,null,values);
+    }
+
+    public Cursor getProductsFromPostPanel(){
+        mydb = getReadableDatabase();
+        return mydb.rawQuery("select * from "+ Post_Panel_Table,null);
+    }
+
+    public void AddCommand(String date){
+        mydb = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(Command_Date_Col,date);
+        mydb.insert(Command_Table,null,values);
+    }
+
+    public void decrementProductQuantity(String Title,int Quantity) {
+        mydb = getWritableDatabase();
+        mydb.rawQuery("UPDATE "+ Product_Table +" SET "+ Product_Quantity_Col +" = " + Product_Quantity_Col + " - " + Quantity + " WHERE " +Product_Title_Col+ " = " +Title+ " ;" ,null);
+    }
 
     public Cursor getAllDataFromTable(String Table){
         mydb = getReadableDatabase();
         return mydb.rawQuery("select * from "+ Table ,null);
     }
+
 
 
 
