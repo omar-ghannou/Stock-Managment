@@ -86,6 +86,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         mydb.insert(Product_Table,null,values);
     }
 
+    public Cursor getCategories(int Category_Id){
+        mydb = getReadableDatabase();
+        return mydb.rawQuery("select *  from " + Product_Table + " where " + Product_Category_Ref_Col " = " + Category_Id,null);
+    }
+
     public void deleteFromProduct(String name){
         mydb = getWritableDatabase();
         mydb.delete(Product_Table,"" + Product_Title_Col + " = ?",new String[]{name});
