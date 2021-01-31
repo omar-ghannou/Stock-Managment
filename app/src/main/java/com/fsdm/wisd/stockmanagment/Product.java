@@ -7,20 +7,41 @@ package com.fsdm.wisd.stockmanagment;
 
 
 public class Product {
+    private int mProductImage;
     private String mTitle;
     private String mDescription;
     private int mInStock;
     private int mProductId;
+    private double mPrice;
+
 
     public Product(){
 
     }
 
-    public Product(String title, String description, int inStock, int productId) {
+    public Product(int productImage, String title, String description, int inStock, int productId, double price) {
+        mProductImage = productImage;
         mTitle = title;
         mDescription = description;
         mInStock = inStock;
         mProductId = productId;
+        mPrice = price;
+    }
+
+    public double getPrice() {
+        return mPrice;
+    }
+
+    public void setPrice(double price) {
+        mPrice = price;
+    }
+
+    public int getProductImage() {
+        return mProductImage;
+    }
+
+    public void setProductImage(int productImage) {
+        mProductImage = productImage;
     }
 
     public String getTitle() {
