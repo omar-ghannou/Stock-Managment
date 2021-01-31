@@ -148,6 +148,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return mydb.rawQuery("select " + Product_Quantity_Col + " from "+ Product_Table +" where " + Product_Id_Col  + " = ? ",new String[]{Integer.toString(Product_Id)});
     }
 
+    public String getProductTitleFromProduct(int Product_Id){
+        mydb = getReadableDatabase();
+        Cursor c = mydb.rawQuery("select " + Product_Title_Col + " from "+ Product_Table +" where " + Product_Id_Col  + " = ? ",new String[]{Integer.toString(Product_Id)});
+        if(c.getCount() != 0) {
+            c.moveToFirst();
+            return c.getString(c.getColumnIndex(Product_Title_Col));
+        }
+        return null;
+    }
+
+
+
     public void deleteFromPanel(int id){
         mydb = getWritableDatabase();
         mydb.delete(Panel_Table,"" + Panel_Product_Id_Col + " = ?",new String[]{Integer.toString(id)});
@@ -166,9 +178,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return mydb.insert(Post_Panel_Table,null,values);
     }
 
-    public Cursor getProductsFromPostPanel(){
+    public Cursor getProductsFromPostPanel(int commandId){
+        if(commandId == -1) return null;
         mydb = getReadableDatabase();
-        return mydb.rawQuery("select * from "+ Post_Panel_Table,null);
+        return mydb.rawQuery("select * from "+ Post_Panel_Table + " where " + Post_Panel_Command_Ref_Col + " =  ? " ,new String[]{Integer.toString(commandId)});
     }
 
     public long AddCommand(String date){
