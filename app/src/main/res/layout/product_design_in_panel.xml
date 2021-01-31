@@ -1,12 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.constraintlayout.widget.ConstraintLayout
-xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:layout_weight="1">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_weight="1">
+
+    <Button
+        android:id="@+id/removeProduct"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="88dp"
+        android:layout_marginLeft="88dp"
+        android:layout_marginTop="8dp"
+        android:background="#EC1818"
+        android:text="retirer"
+        android:textColor="#FFFFFF"
+        app:backgroundTint="#EC1818"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.2"
+        app:layout_constraintStart_toEndOf="@+id/incquantity"
+        app:layout_constraintTop_toBottomOf="@+id/divider2" />
 
     <ImageView
         android:id="@+id/productImage"
@@ -15,9 +30,34 @@ android:layout_weight="1">
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
+        android:src="@android:drawable/btn_star_big_on"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@tools:sample/avatars" />
+        tools:srcCompat="@android:drawable/btn_star_big_on" />
+
+    <ImageView
+        android:id="@+id/incquantity"
+        android:layout_width="54dp"
+        android:layout_height="49dp"
+        android:layout_marginStart="18dp"
+        android:layout_marginLeft="18dp"
+        android:layout_marginTop="8dp"
+        android:src="@mipmap/plus_f"
+        app:layout_constraintStart_toEndOf="@+id/panelQuantity"
+        app:layout_constraintTop_toBottomOf="@+id/divider2"
+        app:srcCompat="@mipmap/plus_f" />
+
+    <ImageView
+        android:id="@+id/decquantity"
+        android:layout_width="54dp"
+        android:layout_height="49dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
+        android:src="@mipmap/ic_minus_f"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider2"
+        app:srcCompat="@mipmap/ic_minus_f" />
 
     <TextView
         android:id="@+id/ProductTitle"
@@ -65,16 +105,14 @@ android:layout_weight="1">
         app:layout_constraintStart_toEndOf="@+id/productImage"
         app:layout_constraintTop_toBottomOf="@+id/ProductTitle" />
 
-    <Button
-        android:id="@+id/removeProduct"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="116dp"
-        android:layout_marginLeft="116dp"
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
         android:layout_marginTop="8dp"
-        android:text="retirer"
-        app:layout_constraintStart_toEndOf="@+id/incquantity"
-        app:layout_constraintTop_toBottomOf="@+id/divider2" />
+        android:background="?android:attr/listDivider"
+        app:layout_constraintTop_toBottomOf="@+id/ProductPrice"
+        tools:layout_editor_absoluteX="0dp" />
 
     <TextView
         android:id="@+id/panelQuantity"
@@ -87,36 +125,5 @@ android:layout_weight="1">
         android:textSize="24sp"
         app:layout_constraintStart_toEndOf="@+id/decquantity"
         app:layout_constraintTop_toBottomOf="@+id/divider2" />
-
-    <ImageView
-        android:id="@+id/incquantity"
-        android:layout_width="54dp"
-        android:layout_height="49dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintStart_toEndOf="@+id/panelQuantity"
-        app:layout_constraintTop_toBottomOf="@+id/divider2"
-        app:srcCompat="@mipmap/plus_f" />
-
-    <ImageView
-        android:id="@+id/decquantity"
-        android:layout_width="54dp"
-        android:layout_height="49dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider2"
-        app:srcCompat="@mipmap/ic_minus_f" />
-
-    <View
-        android:id="@+id/divider2"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="8dp"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintTop_toBottomOf="@+id/ProductPrice"
-        tools:layout_editor_absoluteX="0dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
