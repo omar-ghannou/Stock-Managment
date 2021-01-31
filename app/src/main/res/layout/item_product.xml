@@ -30,7 +30,8 @@
                 android:id="@+id/productTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="title" />
+                android:text="title"
+                android:textSize="24sp" />
 
             <TextView
                 android:id="@+id/productDescription"
@@ -48,7 +49,8 @@
                 android:id="@+id/productPrice"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="price" />
+                android:text="price"
+                android:textSize="18sp" />
 
         </LinearLayout>
 

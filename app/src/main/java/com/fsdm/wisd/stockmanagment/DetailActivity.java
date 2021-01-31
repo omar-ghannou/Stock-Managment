@@ -3,6 +3,7 @@ package com.fsdm.wisd.stockmanagment;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.inputmethodservice.Keyboard;
 import android.os.Bundle;
 import android.text.Editable;
@@ -19,9 +20,13 @@ import android.widget.TextView;
 
 import static android.view.View.VISIBLE;
 
+
+
 public class DetailActivity extends AppCompatActivity implements View.OnClickListener {
     TextView textCartItemCount;
     int mCartItemCount = 0;
+    private DatabaseHelper myDb;
+    private Product mProduct;
 
     //detect if user enter quantity by keyboard or by clicking on button
     private boolean clicked=true;
@@ -35,8 +40,12 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.activity_detail);
         //change title of this acitivity
         getSupportActionBar().setTitle(getResources().getString(R.string.detailActivity));
+        myDb=new DatabaseHelper(this);
 
         //todo hanlde the intent that is comming from MainActivity
+
+       int idProduct= getIntent().getIntExtra("id",0);
+       setProductDetail(idProduct);
 
         mAddToPanel=findViewById(R.id.addPanel);
        mRemoveFromPanel=findViewById(R.id.remove);
@@ -61,6 +70,36 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
        mAddToPanel.setOnClickListener(this);
        mRemoveFromPanel.setOnClickListener(this);
+    }
+
+    private void setProductDetail(int idProduct) {
+        Cursor cursor=myDb.getProductsById(idProduct);
+        while (cursor.moveToNext()){
+
+            mProduct=      new Product(
+                    cursor.getInt(0),
+                    cursor.getString(1),
+                    cursor.getString(2),
+                    cursor.getInt(4),
+                    cursor.getInt(0),
+                    cursor.getDouble(3)
+            );
+
+          TextView title = findViewById(R.id.title_detail);
+          title.setText(cursor.getString(1));
+
+            TextView desc = findViewById(R.id.description_detail);
+            desc.setText(cursor.getString(2));
+
+            TextView price = findViewById(R.id.price_detail);
+            price.setText(cursor.getString(3)+" $");
+
+            TextView quantity = findViewById(R.id.qauntity_detail);
+            quantity.setText("in stock "+cursor.getString(4));
+          //title.setText(cursor.get);
+
+        }
+
     }
 
 
@@ -135,6 +174,10 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
 
             //todo update our panel to do
+            if(mCartItemCount>1)
+               myDb.incrementQuantityInPanel(mProduct.getProductId(),mCartItemCount);
+            else
+                myDb.insertIntoPanel(mProduct.getProductId());
 
             mQuantity.setText(String.valueOf(mCartItemCount));
             mRemoveFromPanel.setVisibility(VISIBLE);
@@ -156,13 +199,18 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
             }
 
             if(quantity==0){
-                Log.d("Details","quantity="+quantity);
+                myDb.deleteFromPanel(mProduct.getProductId());
+
                 mRemoveFromPanel.setVisibility(View.GONE);
+            }
+            else{
+                myDb.incrementQuantityInPanel(mProduct.getProductId(),quantity);
             }
 
 
             mCartItemCount=quantity;
             //todo update our panel table
+
 
             mQuantity.setText(String.valueOf(mCartItemCount));
 

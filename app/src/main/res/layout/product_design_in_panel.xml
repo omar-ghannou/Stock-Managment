@@ -33,7 +33,7 @@
         android:src="@android:drawable/btn_star_big_on"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@android:drawable/btn_star_big_on" />
+        tools:srcCompat="@drawable/ic_baseline_ad_units_24" />
 
     <ImageView
         android:id="@+id/incquantity"
