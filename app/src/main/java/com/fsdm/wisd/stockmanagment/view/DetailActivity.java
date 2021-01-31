@@ -106,6 +106,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     //! ref https://stackoverflow.com/questions/43194243/notification-badge-on-action-item-android
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
         getMenuInflater().inflate(R.menu.main_menu, menu);
 
         final MenuItem menuItem = menu.findItem(R.id.action_cart);
@@ -118,6 +119,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         actionView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 onOptionsItemSelected(menuItem);
             }
         });

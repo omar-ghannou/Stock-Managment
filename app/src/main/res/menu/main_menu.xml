@@ -7,6 +7,17 @@
         android:icon="@drawable/ic_action_cart"
         android:title="Cart"
         app:actionLayout="@layout/app_bar"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/command"
+        android:icon="@drawable/ic_command"
+        android:title="Orders"
         app:showAsAction="always"/>
+    <item
+        android:id="@+id/panel"
+        android:icon="@drawable/ic_action_cart"
+        android:title="Panel"
+        app:showAsAction="ifRoom"/>
 
 </menu>
