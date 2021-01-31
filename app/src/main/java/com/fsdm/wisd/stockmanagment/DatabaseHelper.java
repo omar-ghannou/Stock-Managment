@@ -118,6 +118,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return mydb.rawQuery("select * from " + Product_Table + " where " + Product_Category_Ref_Col + " = ? ",new String[]{Integer.toString(Category_Id)});
     }
 
+    public Cursor getProductsById(int Product_Id){
+        mydb = getReadableDatabase();
+        return mydb.rawQuery("select * from " + Product_Table + " where " + Product_Id_Col + " = ? ",new String[]{Integer.toString(Product_Id)});
+    }
+
     public void insertIntoPanel(int Product_Id){
         mydb = getWritableDatabase();
         ContentValues values = new ContentValues();
