@@ -3,13 +3,16 @@ package com.fsdm.wisd.stockmanagment;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.inputmethodservice.Keyboard;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -19,6 +22,9 @@ import static android.view.View.VISIBLE;
 public class DetailActivity extends AppCompatActivity implements View.OnClickListener {
     TextView textCartItemCount;
     int mCartItemCount = 0;
+
+    //detect if user enter quantity by keyboard or by clicking on button
+    private boolean clicked=true;
 
     Button mAddToPanel,mRemoveFromPanel;
     EditText mQuantity;
@@ -39,31 +45,19 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
        //get ref to quantity ecdit text
         mQuantity=findViewById(R.id.quantityNumber);
         mQuantity.setSelection(0);
-        mQuantity.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        mQuantity.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
-            public void onFocusChange(View view, boolean b) {
-                Log.d("Detail",mQuantity.getText().toString());
-
+            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
+                if(id== EditorInfo.IME_ACTION_DONE)
+                {
+                    clicked=false;
+                    onClick(mAddToPanel);
+                }
+                return false;
             }
         });
-        mQuantity.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
 
 
-
-            }
-        });
 
        mAddToPanel.setOnClickListener(this);
        mRemoveFromPanel.setOnClickListener(this);
@@ -130,6 +124,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
             int quantity=0;
             try {
                 quantity=Integer.parseInt(mQuantity.getText().toString());
+                if(clicked)
                 quantity++;
 
             }catch (Exception e){
@@ -137,6 +132,8 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
             }
 
             mCartItemCount=quantity;
+
+
             //todo update our panel to do
 
             mQuantity.setText(String.valueOf(mCartItemCount));
