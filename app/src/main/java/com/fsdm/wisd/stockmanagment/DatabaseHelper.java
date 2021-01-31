@@ -115,7 +115,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getProductsFromPanel(){
         mydb = getReadableDatabase();
-        return mydb.rawQuery("select p.*, pp." +Panel_Product_Quantity_Col + " from "+ Product_Table + " p, "+ Panel_Table +" pp where p."+ Product_Id_Col +" = pp." + Panel_Product_Id_Col+ " AND " + Product_Id_Col + " IN ( Select " +Panel_Product_Id_Col+ " from " +Panel_Table+ ")" ,null);
+        return mydb.rawQuery("select p." + Product_Id_Col + " as _id ,p.*, pp." +Panel_Product_Quantity_Col + " from "+ Product_Table + " p, "+ Panel_Table +" pp where p."+ Product_Id_Col +" = pp." + Panel_Product_Id_Col+ " AND " + Product_Id_Col + " IN ( Select " +Panel_Product_Id_Col+ " from " +Panel_Table+ ")" ,null);
     }
 
     public Cursor getProductQuantityFromPanel(int Product_Id){
@@ -123,9 +123,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return mydb.rawQuery("select * from "+ Panel_Table +" where " + Panel_Product_Id_Col  + " = ? ",new String[]{Integer.toString(Product_Id)});
     }
 
-    public void deleteFromPanel(String name){
+    public void deleteFromPanel(int id){
         mydb = getWritableDatabase();
-        mydb.delete(Category_Table,"" + Category_Name_Col + " = ?",new String[]{name});
+        mydb.delete(Panel_Table,"" + Panel_Product_Id_Col + " = ?",new String[]{Integer.toString(id)});
     }
     public void ClearPanel(){
         mydb = getWritableDatabase();
