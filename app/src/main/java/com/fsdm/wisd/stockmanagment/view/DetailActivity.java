@@ -108,6 +108,8 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     public boolean onCreateOptionsMenu(Menu menu) {
 
         getMenuInflater().inflate(R.menu.main_menu, menu);
+        menu.getItem(2).setVisible(false);
+
 
         final MenuItem menuItem = menu.findItem(R.id.action_cart);
 
@@ -136,6 +138,9 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                 startActivity(new Intent(this,PanelActivity.class));
                 return true;
             }
+            case R.id.command:
+                startActivity(new Intent(this,CommandsActivity.class));
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
