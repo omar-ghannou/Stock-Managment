@@ -39,9 +39,9 @@ public class PanelActivity extends AppCompatActivity {
 
         mydb = new DatabaseHelper(this);
 
-       // mydb.insertIntoProduct("3asir","3asir bard",10,50,1);
-       // mydb.insertIntoProduct("monada","monada wsf",11,30,2);
-       // mydb.insertIntoProduct("tvs","tlavs ma7rou9in",100,20,3);
+        mydb.insertIntoProduct("3asir","3asir bard",10,50,1);
+        mydb.insertIntoProduct("monada","monada wsf",11,30,2);
+        mydb.insertIntoProduct("tvs","tlavs ma7rou9in",100,20,3);
         mydb.insertIntoPanel(1);
         mydb.insertIntoPanel(2);
         mydb.insertIntoPanel(3);
@@ -70,6 +70,13 @@ public class PanelActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mydb.buy();
+                mydb.ClearPanel();
+                adapter.changeCursor(mydb.getProductsFromPanel());
+                adapter.notifyDataSetChanged();
+                Intent intent = new Intent(getBaseContext(),CommandsActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+
             }
         });
 
