@@ -1,12 +1,14 @@
-package com.fsdm.wisd.stockmanagment;
+package com.fsdm.wisd.stockmanagment.view;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import com.fsdm.wisd.stockmanagment.R;
+import com.fsdm.wisd.stockmanagment.model.DatabaseHelper;
 
 import java.util.ArrayList;
 

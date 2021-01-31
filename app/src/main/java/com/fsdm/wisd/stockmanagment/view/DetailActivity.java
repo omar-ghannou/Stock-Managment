@@ -1,14 +1,10 @@
-package com.fsdm.wisd.stockmanagment;
+package com.fsdm.wisd.stockmanagment.view;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.inputmethodservice.Keyboard;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,6 +13,10 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.fsdm.wisd.stockmanagment.R;
+import com.fsdm.wisd.stockmanagment.model.DatabaseHelper;
+import com.fsdm.wisd.stockmanagment.model.Product;
 
 import static android.view.View.VISIBLE;
 
@@ -173,7 +173,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
             mCartItemCount=quantity;
 
 
-            //todo update our panel to do
+            //todo
             if(mCartItemCount>1)
                myDb.incrementQuantityInPanel(mProduct.getProductId(),mCartItemCount);
             else

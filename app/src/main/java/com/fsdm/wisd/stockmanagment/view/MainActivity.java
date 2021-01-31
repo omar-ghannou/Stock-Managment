@@ -1,23 +1,25 @@
-package com.fsdm.wisd.stockmanagment;
+package com.fsdm.wisd.stockmanagment.view;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.fsdm.wisd.stockmanagment.adapter.Adapter;
+import com.fsdm.wisd.stockmanagment.R;
+import com.fsdm.wisd.stockmanagment.model.Category;
+import com.fsdm.wisd.stockmanagment.model.DatabaseHelper;
+import com.fsdm.wisd.stockmanagment.model.Product;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 

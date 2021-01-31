@@ -9,11 +9,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.StockManagment">
-        <activity android:name=".ProductByCommandActivity"></activity>
-        <activity android:name=".CommandsActivity" />
-        <activity android:name=".DetailActivity" />
-        <activity android:name=".PanelActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".view.ProductByCommandActivity"></activity>
+        <activity android:name=".view.CommandsActivity" />
+        <activity android:name=".view.DetailActivity" />
+        <activity android:name=".view.PanelActivity" />
+        <activity android:name=".view.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -1,4 +1,4 @@
-package com.fsdm.wisd.stockmanagment;
+package com.fsdm.wisd.stockmanagment.view;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -10,6 +10,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.fsdm.wisd.stockmanagment.R;
+import com.fsdm.wisd.stockmanagment.model.DatabaseHelper;
 
 import java.util.ArrayList;
 

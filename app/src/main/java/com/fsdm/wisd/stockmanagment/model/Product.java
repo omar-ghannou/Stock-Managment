@@ -1,4 +1,4 @@
-package com.fsdm.wisd.stockmanagment;
+package com.fsdm.wisd.stockmanagment.model;
 /*
  **    *** Stock Managment ***
  **   Created by EL KHARROUBI HASSAN

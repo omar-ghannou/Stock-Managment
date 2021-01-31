@@ -1,22 +1,17 @@
-package com.fsdm.wisd.stockmanagment;
+package com.fsdm.wisd.stockmanagment.adapter;
 
-import android.app.LoaderManager;
 import android.content.Context;
 import android.database.Cursor;
-import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CursorAdapter;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.util.ArrayList;
+import com.fsdm.wisd.stockmanagment.R;
+import com.fsdm.wisd.stockmanagment.model.DatabaseHelper;
 
 public class CustomCursorAdapter extends CursorAdapter {
 

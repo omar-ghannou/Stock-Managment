@@ -1,4 +1,4 @@
-package com.fsdm.wisd.stockmanagment;
+package com.fsdm.wisd.stockmanagment.view;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -8,8 +8,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CursorAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
+
+import com.fsdm.wisd.stockmanagment.adapter.CustomCursorAdapter;
+import com.fsdm.wisd.stockmanagment.R;
+import com.fsdm.wisd.stockmanagment.model.DatabaseHelper;
 
 public class PanelActivity extends AppCompatActivity {
 
