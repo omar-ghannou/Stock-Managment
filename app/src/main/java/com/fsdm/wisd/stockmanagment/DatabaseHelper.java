@@ -7,14 +7,19 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.widget.SimpleCursorAdapter;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
 import com.google.android.material.tabs.TabLayout;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
+
+    private Context _context;
     public static SQLiteDatabase mydb;
     public static final String dbname = "stockManagement.db";
 
@@ -45,6 +50,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public DatabaseHelper(@Nullable Context context) {
         super(context, dbname, null, 1);
+        _context = context;
         mydb =  this.getWritableDatabase();
     }
 
@@ -98,6 +104,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         mydb.delete(Category_Table,"" + Category_Name_Col + " = ?",new String[]{name});
     }
 
+    public Cursor getCategories(){
+        mydb = getReadableDatabase();
+        return mydb.rawQuery("select *  from " + Category_Table,null);
+    }
+
     public void insertIntoPanel(int Product_Id){
         mydb = getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -129,10 +140,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
     public void ClearPanel(){
         mydb = getWritableDatabase();
-        mydb.delete(Category_Table,null,null);
+        mydb.delete(Panel_Table,null,null);
     }
 
-    public void insertIntoPostPanel(int Product_Id, int Product_Quantity, int Command_Id){
+    public void insertIntoPostPanel(int Product_Id, int Product_Quantity, long Command_Id){
         mydb = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(Post_Panel_Product_Id_Col,Product_Id);
@@ -146,11 +157,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return mydb.rawQuery("select * from "+ Post_Panel_Table,null);
     }
 
-    public void AddCommand(String date){
+    public long AddCommand(String date){
         mydb = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(Command_Date_Col,date);
-        mydb.insert(Command_Table,null,values);
+        return mydb.insert(Command_Table,null,values);
     }
 
     public void decrementProductQuantity(String Title,int Quantity) {
@@ -163,20 +174,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return mydb.rawQuery("select * from "+ Table ,null);
     }
 
+    public void buy(){
+        Date date = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MMM.dd G 'at' HH:mm:ss z");
+        long cmdId = AddCommand(dateFormat.format(date));
+        if(cmdId != -1){
+            CopyDataToPostPanel(cmdId);
+        }
+
+    }
+
+    public void CopyDataToPostPanel(long commandId){
+        Cursor toSaveData = getProductsFromPanel();
+        Toast.makeText(_context," size is : " + toSaveData.getCount(),Toast.LENGTH_LONG).show();
+        toSaveData.moveToFirst();
+        insertIntoPostPanel(toSaveData.getInt(toSaveData.getColumnIndex(DatabaseHelper.Panel_Product_Id_Col)),
+                toSaveData.getInt(toSaveData.getColumnIndex(DatabaseHelper.Panel_Product_Quantity_Col)),
+                (int)commandId
+        );
+        while(toSaveData.moveToNext()){
+            //insertIntoPostPanel(toSaveData.getInt(toSaveData.getColumnIndex(DatabaseHelper.Panel_Product_Id_Col)),
+            //        toSaveData.getInt(toSaveData.getColumnIndex(DatabaseHelper.Panel_Product_Quantity_Col)),
+            //        (int)commandId
+            //        );
+        }
+    }
 
 
-
-
-
-
-
-    //public ArrayList<Product> ShowAllInTable(String Table){
-    //    ArrayList<Product> products = new ArrayList<Product>();
-    //    Cursor data = getAllInTable(Table);
-    //    while(data.moveToNext()){
-    //        products.add(new Product(Integer.toString(data.getInt(data.getColumnIndex("id"))),
-    //                data.getString(data.getColumnIndex("name")),data.getString(data.getColumnIndex("info"))));
-    //    }
-    //    return products;
-    //}
 }

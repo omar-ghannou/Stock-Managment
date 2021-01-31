@@ -52,13 +52,10 @@ public class PanelActivity extends AppCompatActivity {
 
 
         Cursor data =  mydb.getProductsFromPanel();
-        //data.moveToFirst();
+
         CustomCursorAdapter adapter = new CustomCursorAdapter(
                 getBaseContext(),
-                //R.layout.product_design_in_panel,
                 data,
-                //new String[] { DatabaseHelper.Product_Title_Col, DatabaseHelper.Product_Desc_Col,DatabaseHelper.Product_Price_Col,DatabaseHelper.Panel_Product_Quantity_Col },
-                //new int[] { R.id.ProductTitle, R.id.ProductDesc,R.id.ProductPrice,R.id.panelQuantity },0
                 CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER
         );
 
@@ -67,5 +64,22 @@ public class PanelActivity extends AppCompatActivity {
         products.setAdapter(adapter);
 
         adapter.notifyDataSetChanged();
+
+
+        buy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mydb.buy();
+            }
+        });
+
+        clearall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mydb.ClearPanel();
+                adapter.changeCursor(mydb.getProductsFromPanel());
+                adapter.notifyDataSetChanged();
+            }
+        });
     }
 }
