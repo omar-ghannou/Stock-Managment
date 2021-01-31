@@ -23,7 +23,6 @@ public class CustomCursorAdapter extends CursorAdapter {
     Context _context;
     Cursor _cursor;
 
-
     DatabaseHelper mydb;
 
     LayoutInflater inflater;

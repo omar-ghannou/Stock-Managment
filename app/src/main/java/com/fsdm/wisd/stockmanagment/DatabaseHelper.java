@@ -64,7 +64,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         db.execSQL("create table IF NOT EXISTS "+ Panel_Table +"(" + Panel_Product_Id_Col + " INTEGER primary key , "+ Panel_Product_Quantity_Col +" INTEGER NOT NULL);");
 
-        db.execSQL("create table IF NOT EXISTS "+ Post_Panel_Table +"(" + Post_Panel_Product_Id_Col + " INTEGER primary key , "+ Post_Panel_Product_Quantity_Col +" INTEGER NOT NULL, " + Post_Panel_Command_Ref_Col +" INTEGER NOT NULL);");
+        db.execSQL("create table IF NOT EXISTS "+ Post_Panel_Table +"(" + Post_Panel_Product_Id_Col + " INTEGER NOT NULL , "+ Post_Panel_Product_Quantity_Col +" INTEGER NOT NULL, " + Post_Panel_Command_Ref_Col +" INTEGER NOT NULL);");
 
         db.execSQL("create table IF NOT EXISTS "+ Command_Table +"(" + Command_Id_Col + " INTEGER primary key AUTOINCREMENT , "+ Command_Date_Col +" TEXT);");
 
@@ -86,10 +86,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         mydb.insert(Product_Table,null,values);
     }
 
+    public Cursor getCategories(int Category_Id){
+        mydb = getReadableDatabase();
+        return mydb.rawQuery("select *  from " + Product_Table + " where " + Product_Category_Ref_Col + " = " + Category_Id,null);
+    }
+
     public void deleteFromProduct(String name){
         mydb = getWritableDatabase();
         mydb.delete(Product_Table,"" + Product_Title_Col + " = ?",new String[]{name});
-
     }
 
     public void insertIntoCategory(String Category_Name){
@@ -129,10 +133,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return mydb.rawQuery("select p." + Product_Id_Col + " as _id ,p.*, pp." +Panel_Product_Quantity_Col + " from "+ Product_Table + " p, "+ Panel_Table +" pp where p."+ Product_Id_Col +" = pp." + Panel_Product_Id_Col+ " AND " + Product_Id_Col + " IN ( Select " +Panel_Product_Id_Col+ " from " +Panel_Table+ ")" ,null);
     }
 
+    public Cursor getSelectedInPanel(){
+        mydb = getReadableDatabase();
+        return mydb.rawQuery("select * from " + Panel_Table ,null);
+    }
+
     public Cursor getProductQuantityFromPanel(int Product_Id){
         mydb = getReadableDatabase();
         return mydb.rawQuery("select * from "+ Panel_Table +" where " + Panel_Product_Id_Col  + " = ? ",new String[]{Integer.toString(Product_Id)});
     }
+
+    public Cursor getProductQuantityFromProduct(int Product_Id){
+        mydb = getReadableDatabase();
+        return mydb.rawQuery("select " + Product_Quantity_Col + " from "+ Product_Table +" where " + Product_Id_Col  + " = ? ",new String[]{Integer.toString(Product_Id)});
+    }
+
+    public String getProductTitleFromProduct(int Product_Id){
+        mydb = getReadableDatabase();
+        Cursor c = mydb.rawQuery("select " + Product_Title_Col + " from "+ Product_Table +" where " + Product_Id_Col  + " = ? ",new String[]{Integer.toString(Product_Id)});
+        if(c.getCount() != 0) {
+            c.moveToFirst();
+            return c.getString(c.getColumnIndex(Product_Title_Col));
+        }
+        return null;
+    }
+
+
 
     public void deleteFromPanel(int id){
         mydb = getWritableDatabase();
@@ -143,18 +169,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         mydb.delete(Panel_Table,null,null);
     }
 
-    public void insertIntoPostPanel(int Product_Id, int Product_Quantity, long Command_Id){
+    public long insertIntoPostPanel(int Product_Id, int Product_Quantity, long Command_Id){
         mydb = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(Post_Panel_Product_Id_Col,Product_Id);
         values.put(Post_Panel_Product_Quantity_Col,Product_Quantity);
         values.put(Post_Panel_Command_Ref_Col,Command_Id);
-        mydb.insert(Post_Panel_Table,null,values);
+        return mydb.insert(Post_Panel_Table,null,values);
     }
 
-    public Cursor getProductsFromPostPanel(){
+    public Cursor getProductsFromPostPanel(int commandId){
+        if(commandId == -1) return null;
         mydb = getReadableDatabase();
-        return mydb.rawQuery("select * from "+ Post_Panel_Table,null);
+        return mydb.rawQuery("select * from "+ Post_Panel_Table + " where " + Post_Panel_Command_Ref_Col + " =  ? " ,new String[]{Integer.toString(commandId)});
     }
 
     public long AddCommand(String date){
@@ -164,9 +191,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return mydb.insert(Command_Table,null,values);
     }
 
-    public void decrementProductQuantity(String Title,int Quantity) {
-        mydb = getWritableDatabase();
-        mydb.rawQuery("UPDATE "+ Product_Table +" SET "+ Product_Quantity_Col +" = " + Product_Quantity_Col + " - " + Quantity + " WHERE " +Product_Title_Col+ " = " +Title+ " ;" ,null);
+    public void decrementProductQuantity(int Id,int Quantity) {
+        mydb = getReadableDatabase();
+        Cursor c = getProductQuantityFromProduct(Id);
+        if(c.getCount() != 0) {
+            c.moveToFirst();
+            int avQuantity = c.getInt(c.getColumnIndex(DatabaseHelper.Product_Quantity_Col));
+            Quantity = avQuantity - Quantity;
+            mydb = getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put(DatabaseHelper.Product_Quantity_Col, Quantity);
+            mydb.update(Product_Table, values, " " + Product_Id_Col + " = ? ", new String[]{Integer.toString(Id)});
+        }
     }
 
     public Cursor getAllDataFromTable(String Table){
@@ -177,7 +213,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void buy(){
         Date date = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MMM.dd G 'at' HH:mm:ss z");
-        long cmdId = AddCommand(dateFormat.format(date));
+        Long cmdId = AddCommand(dateFormat.format(date));
         if(cmdId != -1){
             CopyDataToPostPanel(cmdId);
         }
@@ -185,18 +221,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public void CopyDataToPostPanel(long commandId){
-        Cursor toSaveData = getProductsFromPanel();
-        Toast.makeText(_context," size is : " + toSaveData.getCount(),Toast.LENGTH_LONG).show();
-        toSaveData.moveToFirst();
-        insertIntoPostPanel(toSaveData.getInt(toSaveData.getColumnIndex(DatabaseHelper.Panel_Product_Id_Col)),
-                toSaveData.getInt(toSaveData.getColumnIndex(DatabaseHelper.Panel_Product_Quantity_Col)),
-                (int)commandId
-        );
+        Cursor toSaveData = getSelectedInPanel();
         while(toSaveData.moveToNext()){
-            //insertIntoPostPanel(toSaveData.getInt(toSaveData.getColumnIndex(DatabaseHelper.Panel_Product_Id_Col)),
-            //        toSaveData.getInt(toSaveData.getColumnIndex(DatabaseHelper.Panel_Product_Quantity_Col)),
-            //        (int)commandId
-            //        );
+
+            int id = toSaveData.getInt(toSaveData.getColumnIndex(DatabaseHelper.Panel_Product_Id_Col));
+            int quantity = toSaveData.getInt(toSaveData.getColumnIndex(DatabaseHelper.Panel_Product_Quantity_Col));
+
+            insertIntoPostPanel(id,quantity,commandId);
+            decrementProductQuantity(id,quantity);
         }
     }
 
