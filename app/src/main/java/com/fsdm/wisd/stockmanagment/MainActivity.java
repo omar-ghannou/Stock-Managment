@@ -24,6 +24,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private ListView mListView;
     private ArrayList<Product> mProducts;
     private Adapter mAdapter;
+    //db
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,8 +33,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         setContentView(R.layout.activity_main);
         //change title of this acitivity
         getSupportActionBar().setTitle(getResources().getString(R.string.productList));
-
         mydb = new DatabaseHelper(getBaseContext());
+
+        mydb.insertIntoCategory("Mobile Téléphones");
+        mydb.insertIntoCategory("Mode Homme");
+        mydb.insertIntoCategory("Électroniques");
+        mydb.insertIntoCategory("Jouets et enfants");
+        mydb.insertIntoCategory("Sacs et chaussures");
+        mydb.insertIntoCategory("Bijoux et montres");
+
+
         String []category={"Choose category","Computer","Clavier","Telephone"};
         mArrayAdapter=new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item,category);
         mSpinner=findViewById(R.id.spinner);
