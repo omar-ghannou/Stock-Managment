@@ -3,6 +3,7 @@ package com.fsdm.wisd.stockmanagment;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,17 +15,22 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     Spinner mSpinner;
     DatabaseHelper mydb;
-    private ArrayAdapter<String> mArrayAdapter;
+    private ArrayAdapter<Category> mArrayAdapter;
     //list
     private ListView mListView;
     private ArrayList<Product> mProducts;
     private Adapter mAdapter;
-    //db
+    private Cursor mCursorCategory;
+    private List<Category> categories;
+
 
 
     @Override
@@ -42,9 +48,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mydb.insertIntoCategory("Sacs et chaussures");
         mydb.insertIntoCategory("Bijoux et montres");
 
+        //fill our categories
+        handleCursor();
 
-        String []category={"Choose category","Computer","Clavier","Telephone"};
-        mArrayAdapter=new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item,category);
+
+
+        
+        
+
+
+
+        mArrayAdapter=new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item,categories);
         mSpinner=findViewById(R.id.spinner);
         mSpinner.setAdapter(mArrayAdapter);
 
@@ -69,7 +83,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         });
 
+    }
 
+    /**
+     * to trait data commign from database.category
+     */
+    public void handleCursor(){
+        mCursorCategory=mydb.getCategories();
+        categories=new ArrayList<>();
+
+        while(mCursorCategory.moveToNext()){
+
+            categories.add(new Category(mCursorCategory.getInt(0),mCursorCategory.getString(1)));
+
+        }
+        mCursorCategory.close();
 
 
 
