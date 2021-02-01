@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -52,48 +53,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mydb = new DatabaseHelper(getBaseContext());
         mProducts=new ArrayList<>();
 
-
-/*        mydb.insertIntoCategory("Mobile Téléphones");
-        mydb.insertIntoCategory("Mode Homme");
-        mydb.insertIntoCategory("Électroniques");
-        mydb.insertIntoCategory("Jouets et enfants");
-        mydb.insertIntoCategory("Sacs et chaussures");
-        mydb.insertIntoCategory("Bijoux et montres");*/
-
-/*        mydb.insertIntoProduct("Portable mini talkie-walkie",
-                "2 pièces/ensemble Baofeng T3 BF-T3 Portable mini talkie-walkie pour" +
-                        " enfants cadeau radio 0.5W Radio bidirectionnelle Interphone émetteur-récepteur BFT3",
-                12,200,1);
-
-        mydb.insertIntoProduct("BF-888S talkie-walkie station de radio Portable",
-                "2 pièces/ensemble Baofeng T3 BF-T3 Portable mini talkie-walkie pour" +
-                        " enfants cadeau radio 0.5W Radio bidirectionnelle Interphone émetteur-récepteur BFT3",
-                15,200,1);
-
-        mydb.insertIntoProduct("costume automne hiver",
-                "Riinr marque hommes laine mélanges costume automne hiver nouvelle couleur" +
-                        " unie haute qualité hommes laine costume luxueux laine mélanges costume mâ",
-                40,150,2);
-
-        mydb.insertIntoProduct(" Micro USB",
-                "Prise de câble magnétique Micro USB Type C USB C prise à 8 brochesâ",
-                40,150,3);
-
-        mydb.insertIntoProduct(" Lhaya ",
-                "lhaya bach yskot",
-                4,120,4);
-
-        mydb.insertIntoProduct(" sac ",
-                "sac k7al fih warda bida",
-                35,110,5);
-
-        mydb.insertIntoProduct(" khatm ",
-                "hadak lkhatm li chafto naima samih w3jabha",
-                95,20,6);*/
-
-
-
-        //fill our categories
         handleCursor();
         mArrayAdapter=new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item,categories);
         mSpinner=findViewById(R.id.spinner);
@@ -105,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mListView=findViewById(R.id.list);
 //fill product in our table
         //0 for first category
-        products(0);
+      //  products(1);
 
         mAdapter=new Adapter(this,R.layout.item_product,mProducts);
         mListView.setAdapter(mAdapter);
@@ -135,7 +94,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
         mCursorCategory.close();
 
-
     }
 
     /**
@@ -144,16 +102,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
      */
     public void products(int categoryId){
 
-
-
-
-        //if(categoryId!=-1){
             mCursorCategory=mydb.getProductsByCategory(categoryId);
-            Toast.makeText(this, "number of data "+mCursorCategory.getCount(), Toast.LENGTH_SHORT).show();
-       // }
-       // else
-           // mCursorCategory=mydb.getAllDataFromTable(DatabaseHelper.Product_Table);
-
 
         while(mCursorCategory.moveToNext()){
             mProducts.add(
@@ -186,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         //remove all old product
         mProducts.clear();
         //look for the new product
-        products(i);
+        products(categories.get(i).getId());
         //notify the adpter to make change on our list
         mAdapter.notifyDataSetChanged();
 
@@ -222,6 +171,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if(item.getItemId()==R.id.panel){
 
             startActivity(new Intent(this,PanelActivity.class));
+            return true;
+
+        }
+        if(item.getItemId()==R.id.add){
+
+            startActivity(new Intent(this,AddProductActivity.class));
             return true;
 
         }

@@ -166,8 +166,11 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
         if(view.getId()==mAddToPanel.getId())
         {
+            
+
 
             int quantity=0;
+           // quantity=myDb.getProductQuantityFromPanel(mProduct.getProductId());
             try {
                 quantity=Integer.parseInt(mQuantity.getText().toString());
                 if(clicked)

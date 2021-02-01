@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -70,7 +71,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public void insertIntoProduct(String Product_Title,String Product_Description, int price, int Available_Quantity, int Category){
+    public long insertIntoProduct(String Product_Title, String Product_Description, int price, int Available_Quantity, int Category){
         mydb = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(Product_Title_Col,Product_Title);
@@ -78,7 +79,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(Product_Price_Col, price);
         values.put(Product_Quantity_Col,Available_Quantity);
         values.put(Product_Category_Ref_Col,Category);
-        mydb.insert(Product_Table,null,values);
+
+        long i=mydb.insert(Product_Table,null,values);
+        return i;
+
+
     }
 
     public Cursor getCategories(int Category_Id){
@@ -109,6 +114,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public Cursor getProductsByCategory(int Category_Id){
+
+        Log.d("Data",Category_Id+" ");
         mydb = getReadableDatabase();
         return mydb.rawQuery("select * from " + Product_Table + " where " + Product_Category_Ref_Col + " = ? ",new String[]{Integer.toString(Category_Id)});
     }
