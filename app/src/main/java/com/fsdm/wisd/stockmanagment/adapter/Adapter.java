@@ -47,10 +47,11 @@ public class Adapter extends ArrayAdapter<Product>  {
 
         if(convertView==null){
             convertView= LayoutInflater.from(mContext).inflate(mRessource,parent,false);
+          }
              title=convertView.findViewById(R.id.productTitle);
-             desc=convertView.findViewById(R.id.productDescription);
+            // desc=convertView.findViewById(R.id.productDescription);
              price=convertView.findViewById(R.id.productPrice);
-             inStock=convertView.findViewById(R.id.inStock);
+             //inStock=convertView.findViewById(R.id.inStock);
 
 
 
@@ -60,7 +61,9 @@ public class Adapter extends ArrayAdapter<Product>  {
             price.setText(mProducts.get(position).getPrice()+"$");
             inStock.setText("int stock ("+mProducts.get(position).getInStock()+")");
 
-        }
+            //ToKtOk@8282
+
+
 
         return convertView;
     }

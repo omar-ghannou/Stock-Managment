@@ -7,7 +7,7 @@ package com.fsdm.wisd.stockmanagment.model;
 
 
 public class Product {
-    private int mProductImage;
+    private byte[] mProductImage;
     private String mTitle;
     private String mDescription;
     private int mInStock;
@@ -19,7 +19,7 @@ public class Product {
 
     }
 
-    public Product(int productImage, String title, String description, int inStock, int productId, double price) {
+    public Product(byte[] productImage, String title, String description, int inStock, int productId, double price) {
         mProductImage = productImage;
         mTitle = title;
         mDescription = description;
@@ -36,11 +36,11 @@ public class Product {
         mPrice = price;
     }
 
-    public int getProductImage() {
+    public byte[] getProductImage() {
         return mProductImage;
     }
 
-    public void setProductImage(int productImage) {
+    public void setProductImage(byte[] productImage) {
         mProductImage = productImage;
     }
 

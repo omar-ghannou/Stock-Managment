@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.fsdm.wisd.stockmanagment.R;
 import com.fsdm.wisd.stockmanagment.model.DatabaseHelper;
+import com.fsdm.wisd.stockmanagment.util.DbBitmapUtility;
 
 public class CustomCursorAdapter extends CursorAdapter {
 
@@ -37,6 +38,9 @@ public class CustomCursorAdapter extends CursorAdapter {
         ((TextView)view.findViewById(R.id.ProductTitle)).setText(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Product_Title_Col)));
         ((TextView)view.findViewById(R.id.ProductDesc)).setText(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Product_Desc_Col)));
         ((TextView)view.findViewById(R.id.ProductPrice)).setText(Integer.toString(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Product_Price_Col))));
+        ((ImageView)view.findViewById(R.id.productImage)).
+                setImageBitmap(DbBitmapUtility.getImage(cursor.getBlob(cursor.getColumnIndex(DatabaseHelper.Product_Image))));
+
 
         ((ImageView)view.findViewById(R.id.incquantity)).setOnClickListener(new View.OnClickListener(){
             @Override

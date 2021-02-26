@@ -41,6 +41,14 @@ public class PanelActivity extends AppCompatActivity {
 
         Cursor data =  mydb.getProductsFromPanel();
 
+        if(data.getCount()==0){
+
+            buy.setEnabled(false);
+            clearall.setEnabled(false);
+
+
+        }
+
         CustomCursorAdapter adapter = new CustomCursorAdapter(
                 getBaseContext(),
                 data,
@@ -71,9 +79,13 @@ public class PanelActivity extends AppCompatActivity {
         clearall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
                 mydb.ClearPanel();
                 adapter.changeCursor(mydb.getProductsFromPanel());
                 adapter.notifyDataSetChanged();
+                buy.setEnabled(false);
+                clearall.setEnabled(false);
             }
         });
     }

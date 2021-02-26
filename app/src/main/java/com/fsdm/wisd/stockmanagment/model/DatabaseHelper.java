@@ -26,6 +26,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String Product_Price_Col = "product_price";
     public static final String Product_Quantity_Col = "product_quantity";
     public static final String Product_Category_Ref_Col = "product_category_ref";
+    public static final String Product_Image = "product_image";
 
     public static final String Category_Table = "category";
     public static final String Category_Id_Col = "category_id";
@@ -54,7 +55,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
 
         db.execSQL("create table IF NOT EXISTS "+ Product_Table +"(" +Product_Id_Col + " INTEGER primary key AUTOINCREMENT , "+ Product_Title_Col +" TEXT NOT NULL, " + Product_Desc_Col +" TEXT," +
-                 Product_Price_Col + " INTEGER NOT NULL, " + Product_Quantity_Col + " INTEGER NOT NULL, " + Product_Category_Ref_Col + " INTEGER );");
+                 Product_Price_Col + " INTEGER NOT NULL, " + Product_Quantity_Col + " INTEGER NOT NULL, " +Product_Image+" BLOB,"+ Product_Category_Ref_Col + " INTEGER );");
 
         db.execSQL("create table IF NOT EXISTS "+ Category_Table +"(" +Category_Id_Col + " INTEGER primary key AUTOINCREMENT, "+ Category_Name_Col +" TEXT NOT NULL);");
 
@@ -71,7 +72,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public long insertIntoProduct(String Product_Title, String Product_Description, int price, int Available_Quantity, int Category){
+    public long insertIntoProduct(String Product_Title, String Product_Description, int price, int Available_Quantity, byte[] image, int Category){
         mydb = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(Product_Title_Col,Product_Title);
@@ -79,6 +80,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(Product_Price_Col, price);
         values.put(Product_Quantity_Col,Available_Quantity);
         values.put(Product_Category_Ref_Col,Category);
+        values.put(Product_Image,image);
+
+
 
         long i=mydb.insert(Product_Table,null,values);
         return i;
@@ -148,6 +152,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Cursor getSelectedInPanel(){
         mydb = getReadableDatabase();
         return mydb.rawQuery("select * from " + Panel_Table ,null);
+    }
+
+    public int getSelectedInPanel(int Id){
+        mydb = getReadableDatabase();
+        Cursor c = mydb.rawQuery("select * from " + Panel_Table + " where " + Panel_Product_Id_Col + " = ?" ,new String[]{Integer.toString(Id)});
+        if(c.getCount() > 0)
+        {
+            c.moveToFirst();
+            return c.getInt(c.getColumnIndex(Panel_Product_Quantity_Col));
+
+        }
+
+        return 0;
     }
 
     public Cursor getProductQuantityFromPanel(int Product_Id){

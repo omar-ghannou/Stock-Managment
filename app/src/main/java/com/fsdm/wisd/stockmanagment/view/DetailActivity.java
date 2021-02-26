@@ -27,6 +27,8 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     int mCartItemCount = 0;
     private DatabaseHelper myDb;
     private Product mProduct;
+    int idProduct;
+    int quantity;
 
     //detect if user enter quantity by keyboard or by clicking on button
     private boolean clicked=true;
@@ -44,7 +46,11 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
         //todo hanlde the intent that is comming from MainActivity
 
-       int idProduct= getIntent().getIntExtra("id",0);
+        idProduct= getIntent().getIntExtra("id",0);
+
+        quantity=myDb.getSelectedInPanel(idProduct);
+
+
        setProductDetail(idProduct);
 
         mAddToPanel=findViewById(R.id.addPanel);
@@ -53,7 +59,11 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
        //get ref to quantity ecdit text
         mQuantity=findViewById(R.id.quantityNumber);
-        mQuantity.setSelection(0);
+        if(quantity>0){
+            mRemoveFromPanel.setVisibility(VISIBLE);
+        }
+        //mQuantity.setSelection(quantity);
+        mQuantity.setText(quantity+"");
         mQuantity.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -77,7 +87,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         while (cursor.moveToNext()){
 
             mProduct=      new Product(
-                    cursor.getInt(0),
+                    cursor.getBlob(cursor.getColumnIndex(DatabaseHelper.Product_Image)),
                     cursor.getString(1),
                     cursor.getString(2),
                     cursor.getInt(4),
@@ -136,6 +146,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
             case R.id.action_cart: {
                 startActivity(new Intent(this,PanelActivity.class));
+                finish();
                 return true;
             }
             case R.id.command:
@@ -169,7 +180,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
             
 
 
-            int quantity=0;
+            int quantity=myDb.getSelectedInPanel(idProduct);
            // quantity=myDb.getProductQuantityFromPanel(mProduct.getProductId());
             try {
                 quantity=Integer.parseInt(mQuantity.getText().toString());
@@ -229,4 +240,6 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         }
 
     }
+
+
 }

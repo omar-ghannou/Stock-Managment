@@ -2,13 +2,15 @@ package com.fsdm.wisd.stockmanagment.view;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.os.Build;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +23,7 @@ import android.widget.Toast;
 
 import com.fsdm.wisd.stockmanagment.adapter.Adapter;
 import com.fsdm.wisd.stockmanagment.R;
+import com.fsdm.wisd.stockmanagment.adapter.RecylerViewPers;
 import com.fsdm.wisd.stockmanagment.model.Category;
 import com.fsdm.wisd.stockmanagment.model.DatabaseHelper;
 import com.fsdm.wisd.stockmanagment.model.Product;
@@ -36,11 +39,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     //for spinner
     private ArrayAdapter<Category> mArrayAdapter;
     //list
-    private ListView mListView;
+    private RecyclerView mRecyler;
+    private RecylerViewPers mRecylerViewPers;
     private ArrayList<Product> mProducts;
-    private Adapter mAdapter;
+
     private Cursor mCursorCategory;
     private List<Category> categories;
+    private String cat[]={"Mobile Téléphones","Mode Homme","Électroniques","Bijoux et montres"};
+
+    //detect when we back from other activities to this one
+    private static boolean mIsback=false;
+    private static int id;
+
+
 
 
 
@@ -51,6 +62,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         //change title of this activity
         getSupportActionBar().setTitle(getResources().getString(R.string.productList));
         mydb = new DatabaseHelper(getBaseContext());
+        //we call it whene we have no cateories
+        //for (String s : cat) mydb.insertIntoCategory(s);
+
         mProducts=new ArrayList<>();
 
         handleCursor();
@@ -58,25 +72,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mSpinner=findViewById(R.id.spinner);
 
         mSpinner.setAdapter(mArrayAdapter);
-
         mSpinner.setOnItemSelectedListener(this);
         //list
-        mListView=findViewById(R.id.list);
+        mRecyler =findViewById(R.id.recyler);
+        mRecyler.setLayoutManager(new LinearLayoutManager(this));
 //fill product in our table
         //0 for first category
       //  products(1);
 
-        mAdapter=new Adapter(this,R.layout.item_product,mProducts);
-        mListView.setAdapter(mAdapter);
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-                Intent intent=new Intent(MainActivity.this,DetailActivity.class);
-                intent.putExtra("id",mProducts.get(i).getProductId());
-                startActivity(intent);
-            }
-        });
+        mRecylerViewPers=new RecylerViewPers(this,mProducts);
+        mRecyler.setAdapter(mRecylerViewPers);
 
     }
 
@@ -107,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         while(mCursorCategory.moveToNext()){
             mProducts.add(
                     new Product(
-                    mCursorCategory.getInt(0),
+                    mCursorCategory.getBlob(mCursorCategory.getColumnIndex(DatabaseHelper.Product_Image)),
                             mCursorCategory.getString(1),
                     mCursorCategory.getString(2),
                     mCursorCategory.getInt(4),
@@ -118,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         }
 
-      //  mAdapter.notifyDataSetChanged();
+        mRecylerViewPers.notifyDataSetChanged();
 
         Toast.makeText(this, "our table "+mProducts.size(), Toast.LENGTH_SHORT).show();
 
@@ -129,6 +135,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        id=i;
 
         //lit all products that belong to this category
 
@@ -137,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         //look for the new product
         products(categories.get(i).getId());
         //notify the adpter to make change on our list
-        mAdapter.notifyDataSetChanged();
+        mRecylerViewPers.notifyDataSetChanged();
 
 
     }
@@ -166,6 +173,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if(item.getItemId()==R.id.command)
         {
             startActivity(new Intent(this,CommandsActivity.class));
+
             return true;
         }
         if(item.getItemId()==R.id.panel){
@@ -181,5 +189,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mIsback=true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(mIsback){
+            products(id);
+
+
+        }
+
     }
 }
